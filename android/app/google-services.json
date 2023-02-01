@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "367227212802",
+    "project_id": "osman-furniture-project",
+    "storage_bucket": "osman-furniture-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:367227212802:android:4499ccf0bdec7a6dfe431b",
+        "android_client_info": {
+          "package_name": "com.example.bussiness_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "367227212802-irca8si5bukgu31033k3tr79cm72slti.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bussiness_management",
+            "certificate_hash": "f97740dd0e8b8a32ebca66824340d295cbecfcf7"
+          }
+        },
+        {
+          "client_id": "367227212802-lghh7rkm3v8pk4rp6fkbei1l2kauls08.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlVFAkXn78Uk9VE3ckp5NSM0qhcGPCIvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "367227212802-lghh7rkm3v8pk4rp6fkbei1l2kauls08.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
