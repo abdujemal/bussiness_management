@@ -40,6 +40,7 @@ abstract class DatabaseDataSrc {
   Future<void> updateItem(ItemModel itemModel, File? file, {int? quantity});
   Future<void> addItemHistory(ItemHistoryModel itemHistoryModel, String itemId);
   Future<void> addExpense(ExpenseModel expenseModel);
+  Future<List<ExpenseModel>> searchExpense(String sellerName);
   Future<List<ExpenseModel>> getExpenses(
       int? quantity, String? status, String? date, bool isNew);
   Future<void> updateExpense(ExpenseModel expenseModel);
@@ -140,16 +141,16 @@ class DatabaseDataSrcImpl extends DatabaseDataSrc {
       ),
     );
 
-    if(orderModel.status == OrderStatus.Delivered){
+    if (orderModel.status == OrderStatus.Delivered) {
       await addOrderChart(
         OrderChartModel(
           orderId: res.id,
           date: orderModel.finishedDate,
-          price: (orderModel.productPrice * orderModel.quantity) - orderModel.payedPrice,
+          price: (orderModel.productPrice * orderModel.quantity) -
+              orderModel.payedPrice,
         ),
       );
     }
-
 
     return res.id.toString();
   }
@@ -434,7 +435,8 @@ class DatabaseDataSrcImpl extends DatabaseDataSrc {
                   'pricePerUnit': itemModel.pricePerUnit,
                   'description': itemModel.description,
                   'quantity': quantity
-                }: {
+                }
+              : {
                   'image': itemModel.image,
                   'name': itemModel.name,
                   'category': itemModel.category,
@@ -473,12 +475,14 @@ class DatabaseDataSrcImpl extends DatabaseDataSrc {
         .doc(orderModel.id)
         .update(orderModel.toMap());
 
-    if(prevState == OrderStatus.Pending && orderModel.status == OrderStatus.Delivered){
+    if (prevState == OrderStatus.Pending &&
+        orderModel.status == OrderStatus.Delivered) {
       await addOrderChart(
         OrderChartModel(
           orderId: orderModel.id!,
           date: orderModel.finishedDate,
-          price: (orderModel.productPrice * orderModel.quantity) - orderModel.payedPrice,
+          price: (orderModel.productPrice * orderModel.quantity) -
+              orderModel.payedPrice,
         ),
       );
     }
@@ -542,14 +546,11 @@ class DatabaseDataSrcImpl extends DatabaseDataSrc {
     } else if (path == FirebaseConstants.expenses) {
       await deleteExpenseChart(id);
     }
-    
   }
 
   @override
   Future<List<CustomerModel>> searchCustomers(
       String key, String value, int length) async {
-
-
     final customersqs = await firebaseFirestore
         .collection(FirebaseConstants.customers)
         .orderBy(key)
@@ -674,5 +675,22 @@ class DatabaseDataSrcImpl extends DatabaseDataSrc {
       batch.delete(doc.reference);
     }
     await batch.commit();
+  }
+
+  @override
+  Future<List<ExpenseModel>> searchExpense(String sellerName) async {
+    final expenseQs = await firebaseFirestore
+        .collection(FirebaseConstants.expenses)
+        .orderBy('seller')
+        .startAfter([sellerName])
+        .limit(5)
+        .get();
+        
+    List<ExpenseModel> expenses = [];
+    for (var doc in expenseQs.docs) {
+      expenses.add(ExpenseModel.fromFirebase(doc));
+    }
+
+    return expenses;
   }
 }

@@ -22,7 +22,7 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   List<Widget> tabBodies = [
     const HomeTab(),
     const OrderTab(),
@@ -33,11 +33,20 @@ class _MainPageState extends State<MainPage> {
   MainConntroller mainConntroller = Get.put(di<MainConntroller>());
   LSController lsController = Get.put(di<LSController>());
 
+  TabController? tabController;
+
+  @override
+  void initState() {
+    tabController = TabController(length: 4, vsync: this, );
+    
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
-      bottomNavigationBar: BottomNav(),
+      bottomNavigationBar: BottomNav(controller: tabController!),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: GestureDetector(
         onTap: () {
@@ -68,14 +77,14 @@ class _MainPageState extends State<MainPage> {
       body: Obx(
         () => Stack(
           children: [
-            tabBodies[mainConntroller.currentTabIndex.value],
-            Positioned(
-              bottom: 50,
+            TabBarView(controller: tabController, children: tabBodies),
+            // tabBodies[mainConntroller.currentTabIndex.value],
+            AnimatedPositioned(
+              curve: Curves.decelerate,
+              bottom: mainConntroller.isAddDialogueOpen.value ? 50 : -280,
               right: MediaQuery.of(context).size.width / 2 - 115,
-              child: Visibility(
-                visible: mainConntroller.isAddDialogueOpen.value,
-                child: const AddDialogue(),
-              ),
+              duration: const Duration(seconds: 1),
+              child: const AddDialogue(),
             )
           ],
         ),

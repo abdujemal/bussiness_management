@@ -11,13 +11,15 @@ class BottomNavItem extends StatelessWidget {
   IconData iconData;
   IconData activeIcon;
   int index;
+  void Function() onTap;
 
   BottomNavItem(
       {Key? key,
       required this.activeIcon,
       required this.label,
       required this.iconData,
-      required this.index})
+      required this.index,
+      required this.onTap,})
       : super(key: key);
 
   LSController lsController = Get.put(di<LSController>());
@@ -26,15 +28,7 @@ class BottomNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        if (lsController.currentUser.value.priority !=
-                UserPriority.Admin &&
-                index == 2) {
-          toast("You can't access budget.", ToastType.error);
-        } else {
-          mainConntroller.setCurrentTabIndex(index);
-        }
-      },
+      onTap: onTap,
       child: Ink(
         height: 70,
         width: 60,

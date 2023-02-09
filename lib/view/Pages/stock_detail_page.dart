@@ -171,6 +171,85 @@ class _StockDetailPageState extends State<StockDetailPage> {
     );
   }
 
+  sellerFeild() {
+    return RawAutocomplete<ExpenseModel>(
+      initialValue: TextEditingValue(text: sellerTc.text),
+      displayStringForOption: (option) {
+        return option.seller;
+      },
+      optionsBuilder: (TextEditingValue textEditingValue) async {
+        if (textEditingValue.text == '') {
+          return const Iterable<ExpenseModel>.empty();
+        } else {
+          if (mainConntroller.getExpensesStatus.value != RequestState.loading) {
+           
+            await mainConntroller.searchExpense(textEditingValue.text);
+
+            return mainConntroller.searchExpenses;
+          } else {
+            return const Iterable<ExpenseModel>.empty();
+          }
+        }
+      },
+      fieldViewBuilder: (BuildContext context,
+          TextEditingController textEditingController,
+          FocusNode focusNode,
+          VoidCallback onFieldSubmitted) {
+        return SLInput(
+          title:"Seller",
+          hint: "Tofiq",
+          keyboardType: TextInputType.text,
+          inputColor: whiteColor,
+          otherColor: textColor,
+          controller: textEditingController,
+          isOutlined: true,
+          focusNode: focusNode,
+          onChanged: (val) {
+            sellerTc.text = val;
+          },
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        return Material(
+          color: backgroundColor,
+          child: Obx(() {
+            print(options.length);
+            return mainConntroller.getExpensesStatus.value ==
+                    RequestState.loading
+                ? Center(
+                    child: CircularProgressIndicator(color: primaryColor),
+                  )
+                : SizedBox(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: options.map((opt) {
+                          return InkWell(
+                            onTap: () {
+                              onSelected(opt);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 23),
+                              child: Card(
+                                child: Container(
+                                  color: mainBgColor,
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(opt.seller),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+          }),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -307,15 +386,7 @@ class _StockDetailPageState extends State<StockDetailPage> {
                         height: 20,
                       ),
                       selectedItemHistoryType == ItemHistoryType.buyed
-                          ? SLInput(
-                              title: "Seller",
-                              hint: "Tofiq",
-                              keyboardType: TextInputType.text,
-                              controller: sellerTc,
-                              inputColor: whiteColor,
-                              otherColor: textColor,
-                              isOutlined: true,
-                            )
+                          ? sellerFeild()
                           : const SizedBox(),
                       const SizedBox(
                         height: 15,

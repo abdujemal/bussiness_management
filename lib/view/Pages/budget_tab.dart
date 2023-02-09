@@ -22,7 +22,7 @@ class BudgetTab extends StatefulWidget {
   State<BudgetTab> createState() => _BudgetTabState();
 }
 
-class _BudgetTabState extends State<BudgetTab> {
+class _BudgetTabState extends State<BudgetTab> with AutomaticKeepAliveClientMixin<BudgetTab> {
   MainConntroller mainConntroller = Get.find<MainConntroller>();
 
   List<String> dataType = ['Month', "Year"];
@@ -484,4 +484,7 @@ class _BudgetTabState extends State<BudgetTab> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -3,7 +3,6 @@ import 'package:bussiness_management/data/model/expense_model.dart';
 import 'package:bussiness_management/view/controller/main_controller.dart';
 import 'package:bussiness_management/view/widget/custom_btn.dart';
 import 'package:bussiness_management/view/widget/my_dropdown.dart';
-import 'package:bussiness_management/view/widget/sl_btn.dart';
 import 'package:bussiness_management/view/widget/sl_input.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -55,10 +54,89 @@ class _AddExpenseState extends State<AddExpense> {
       sellerTc.text = widget.expenseModel!.seller;
       expenseState = widget.expenseModel!.expenseStatus;
       currentDate = widget.expenseModel!.date;
-      setState(() {
-        
-      });
+      setState(() {});
     }
+  }
+
+  sellerFeild() {
+    return RawAutocomplete<ExpenseModel>(
+      initialValue: TextEditingValue(text: sellerTc.text),
+      displayStringForOption: (option) {
+        return option.seller;
+      },
+      optionsBuilder: (TextEditingValue textEditingValue) async {
+        if (textEditingValue.text == '') {
+          return const Iterable<ExpenseModel>.empty();
+        } else {
+          if (mainConntroller.getExpensesStatus.value != RequestState.loading) {
+           
+            await mainConntroller.searchExpense(textEditingValue.text);
+
+            return mainConntroller.searchExpenses;
+          } else {
+            return const Iterable<ExpenseModel>.empty();
+          }
+        }
+      },
+      fieldViewBuilder: (BuildContext context,
+          TextEditingController textEditingController,
+          FocusNode focusNode,
+          VoidCallback onFieldSubmitted) {
+        return SLInput(
+          title: expenseCategory == ExpenseCategory.employee
+              ? "Employee"
+              : "Seller",
+          hint: "Tofiq",
+          keyboardType: TextInputType.text,
+          inputColor: whiteColor,
+          otherColor: textColor,
+          controller: textEditingController,
+          isOutlined: true,
+          focusNode: focusNode,
+          onChanged: (val) {
+            sellerTc.text = val;
+          },
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        return Material(
+          color: backgroundColor,
+          child: Obx(() {
+            print(options.length);
+            return mainConntroller.getExpensesStatus.value ==
+                    RequestState.loading
+                ? Center(
+                    child: CircularProgressIndicator(color: primaryColor),
+                  )
+                : SizedBox(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: options.map((opt) {
+                          return InkWell(
+                            onTap: () {
+                              onSelected(opt);
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 23),
+                              child: Card(
+                                child: Container(
+                                  color: mainBgColor,
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(10),
+                                  child: Text(opt.seller),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
+          }),
+        );
+      },
+    );
   }
 
   @override
@@ -125,15 +203,18 @@ class _AddExpenseState extends State<AddExpense> {
                 const SizedBox(
                   height: 15,
                 ),
-                SLInput(
-                  title: expenseCategory == ExpenseCategory.employee ?  "Employee" : "Seller",
-                  hint: "Tofiq",
-                  keyboardType: TextInputType.text,
-                  controller: sellerTc,
-                  inputColor: whiteColor,
-                  otherColor: textColor,
-                  isOutlined: true,
-                ),
+                sellerFeild(),
+                // SLInput(
+                //   title: expenseCategory == ExpenseCategory.employee
+                //       ? "Employee"
+                //       : "Seller",
+                //   hint: "Tofiq",
+                //   keyboardType: TextInputType.text,
+                //   controller: sellerTc,
+                //   inputColor: whiteColor,
+                //   otherColor: textColor,
+                //   isOutlined: true,
+                // ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(

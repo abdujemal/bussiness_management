@@ -44,10 +44,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/model/order_chart_model.dart';
 import '../../domain/usecase/get_single_order_usecase.dart';
+import '../../domain/usecase/search_expense_usecase.dart';
 
 class MainConntroller extends GetxController {
   RxInt currentTabIndex = 0.obs;
   RxInt mainIndex = 0.obs;
+  
   Rx<ZoomDrawerController> z = ZoomDrawerController().obs;
   RxBool isAddDialogueOpen = false.obs;
   RxList<String> dropdownVal = <String>[].obs;
@@ -68,6 +70,7 @@ class MainConntroller extends GetxController {
 
   RxList<ExpenseModel> payedExpenses = <ExpenseModel>[].obs;
   RxList<ExpenseModel> unPayedExpenses = <ExpenseModel>[].obs;
+  RxList<ExpenseModel> searchExpenses = <ExpenseModel>[].obs;
   RxList<OrderModel> pendingOrders = <OrderModel>[].obs;
   RxList<OrderModel> deliveredOrders = <OrderModel>[].obs;
   RxList<ExpenseChartModel> expensesChart = <ExpenseChartModel>[].obs;
@@ -103,10 +106,12 @@ class MainConntroller extends GetxController {
   GetExpenseChartUsecase getExpenseChartUsecase;
   GetOrderChartUsecase getOrderChartUsecase;
   GetSingleOrderUsecase getSingleOrderUsecase;
+  SearchExpenseUsecase searchExpenseUsecase;
 
   Future<SharedPreferences> sharedPreferences = SharedPreferences.getInstance();
 
   MainConntroller(
+    this.searchExpenseUsecase,
     this.getSingleOrderUsecase,
     this.getExpenseChartUsecase,
     this.getOrderChartUsecase,
@@ -364,6 +369,33 @@ class MainConntroller extends GetxController {
     });
   }
 
+  searchExpense(String sellerName) async {
+    getExpensesStatus.value = RequestState.loading;
+
+    final res =
+        await searchExpenseUsecase.call(SearchExpenseParams(sellerName));
+
+    res.fold((l) {
+      getExpensesStatus.value = RequestState.error;
+      toast(l.toString(), ToastType.error);
+    }, (r) {
+      getExpensesStatus.value = RequestState.loaded;
+
+      List<String> sellers = [];
+
+      List<ExpenseModel> expenses = [];
+
+      for (ExpenseModel element in r) {
+        if (!sellers.contains(element.seller)) {
+          sellers.add(element.seller);
+          expenses.add(element);
+        }
+      }
+
+      searchExpenses.value = expenses;
+    });
+  }
+
   addExpense(ExpenseModel expenseModel, {goBack = true}) async {
     var connectivityResult = await Connectivity().checkConnectivity();
 
@@ -612,7 +644,8 @@ class MainConntroller extends GetxController {
     }
 
     orderStatus.value = RequestState.loading;
-    final res = await updateOrderUsecase.call(UpdateOrderParams(orderModel, prevState));
+    final res =
+        await updateOrderUsecase.call(UpdateOrderParams(orderModel, prevState));
 
     res.fold((l) {
       orderStatus.value = RequestState.error;

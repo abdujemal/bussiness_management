@@ -24,17 +24,7 @@ class OrderItem extends StatefulWidget {
 class _OrderItemState extends State<OrderItem> {
   File? file;
   bool isOverDue = false;
-
-  @override
-  void initState() {
-    isOverDue = DateTime.parse(widget.orderModel.finishedDate)
-            .difference(DateTime.now())
-            .inDays <
-        0;
-    super.initState();
-
-    setImageFile();
-  }
+  int remainingDay = 0;
 
   setImageFile() async {
     if (widget.orderModel.imgUrl != "") {
@@ -48,12 +38,25 @@ class _OrderItemState extends State<OrderItem> {
 
   @override
   Widget build(BuildContext context) {
+    isOverDue = DateTime.parse(widget.orderModel.finishedDate)
+            .difference(DateTime.now())
+            .inDays <
+        0;
+    remainingDay = DateTime.parse(widget.orderModel.finishedDate)
+        .difference(DateTime.now())
+        .inDays;
+
+    setImageFile();
     return Stack(
       children: [
         Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-              color: isOverDue ? widget.isFinished ? primaryColor : Colors.red : primaryColor,
+              color: isOverDue
+                  ? widget.isFinished
+                      ? primaryColor
+                      : Colors.red
+                  : primaryColor,
               borderRadius: BorderRadius.circular(15),
               boxShadow: [
                 BoxShadow(
@@ -109,7 +112,7 @@ class _OrderItemState extends State<OrderItem> {
                   style: const TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 17),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 if (!widget.isFinished)
@@ -120,10 +123,11 @@ class _OrderItemState extends State<OrderItem> {
                         borderRadius: BorderRadius.circular(5)),
                     child: Text(
                       isOverDue
-                          ? "${DateTime.parse(widget.orderModel.finishedDate).difference(DateTime.now()).inDays}"
-                                  .replaceAll("-", "") +
+                          ? "$remainingDay".replaceAll("-", "") +
                               " days Overdue"
-                          : "${DateTime.parse(widget.orderModel.finishedDate).difference(DateTime.now()).inDays} days left",
+                          : remainingDay == 0
+                              ? "Last day: Today"
+                              : "$remainingDay days left",
                       style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

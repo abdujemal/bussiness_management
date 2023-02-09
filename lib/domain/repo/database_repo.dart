@@ -36,6 +36,7 @@ abstract class DatabaseRepo {
   Future<Either<Exception, void>> addItemHistory(
       ItemHistoryModel itemHistoryModel, String itemId);
   Future<Either<Exception, void>> addExpense(ExpenseModel expenseModel);
+  Future<Either<Exception, List<ExpenseModel>>> searchExpense(String sellerName);
   Future<Either<Exception, List<ExpenseModel>>> getExpenses(
       int? quantity, String? status, String? date, bool isNew);
   Future<Either<Exception, void>> updateExpense(ExpenseModel expenseModel);

@@ -8,6 +8,7 @@ import 'package:bussiness_management/view/controller/main_controller.dart';
 import 'package:bussiness_management/view/widget/expense_card.dart';
 import 'package:bussiness_management/view/widget/order_item.dart';
 import 'package:bussiness_management/view/widget/sample_line_chart.dart';
+import 'package:calendar_view/calendar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,7 +24,7 @@ class HomeTab extends StatefulWidget {
   State<HomeTab> createState() => _HomeTabState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class _HomeTabState extends State<HomeTab> with AutomaticKeepAliveClientMixin<HomeTab> {
   MainConntroller mainConntroller = Get.find<MainConntroller>();
 
   LSController lsController = Get.find<LSController>();
@@ -79,7 +80,11 @@ class _HomeTabState extends State<HomeTab> {
     Colors.pink,
     Colors.orange,
     Colors.purple,
-    Colors.brown
+    Colors.brown,
+    Colors.black,
+    Colors.white,
+    Colors.indigo,
+    Colors.lime
   ];
 
   List<Map<String, dynamic>> locations = [];
@@ -138,70 +143,16 @@ class _HomeTabState extends State<HomeTab> {
     bigestPrice = 0;
     data = [];
 
-    DateTime today = DateTime.now();
+    List<DateTime> displayDays = DateTime.now().datesOfWeek();
 
     List<ExpenseChartModel> expenses =
-        mainConntroller.expensesChart.where((ExpenseChartModel model) {
-      List<int> dayToDisplay = [];
-      if (today.weekday == 1) {
-        dayToDisplay = [for (var i = today.day; i <= today.day + 6; i += 1) i];
-      } else if (today.weekday == 2) {
-        dayToDisplay = [
-          for (var i = today.day - 1; i <= today.day + 5; i += 1) i
-        ];
-      } else if (today.weekday == 3) {
-        dayToDisplay = [
-          for (var i = today.day - 2; i <= today.day + 4; i += 1) i
-        ];
-      } else if (today.weekday == 4) {
-        dayToDisplay = [
-          for (var i = today.day - 3; i <= today.day + 3; i += 1) i
-        ];
-      } else if (today.weekday == 5) {
-        dayToDisplay = [
-          for (var i = today.day - 4; i <= today.day + 2; i += 1) i
-        ];
-      } else if (today.weekday == 6) {
-        dayToDisplay = [
-          for (var i = today.day - 5; i <= today.day + 1; i += 1) i
-        ];
-      } else if (today.weekday == 7) {
-        dayToDisplay = [for (var i = today.day - 6; i <= today.day; i += 1) i];
-      }
-
-      return dayToDisplay.contains(DateTime.parse(model.date).day);
+        mainConntroller.expensesChart.where((ExpenseChartModel model) {     
+      return displayDays.contains(DateTime.parse(model.date));
     }).toList();
 
     List<OrderChartModel> orders =
         mainConntroller.ordersChart.where((OrderChartModel model) {
-      List<int> dayToDisplay = [];
-      if (today.weekday == 1) {
-        dayToDisplay = [for (var i = today.day; i <= today.day + 6; i += 1) i];
-      } else if (today.weekday == 2) {
-        dayToDisplay = [
-          for (var i = today.day - 1; i <= today.day + 5; i += 1) i
-        ];
-      } else if (today.weekday == 3) {
-        dayToDisplay = [
-          for (var i = today.day - 2; i <= today.day + 4; i += 1) i
-        ];
-      } else if (today.weekday == 4) {
-        dayToDisplay = [
-          for (var i = today.day - 3; i <= today.day + 3; i += 1) i
-        ];
-      } else if (today.weekday == 5) {
-        dayToDisplay = [
-          for (var i = today.day - 4; i <= today.day + 2; i += 1) i
-        ];
-      } else if (today.weekday == 6) {
-        dayToDisplay = [
-          for (var i = today.day - 5; i <= today.day + 1; i += 1) i
-        ];
-      } else if (today.weekday == 7) {
-        dayToDisplay = [for (var i = today.day - 6; i <= today.day; i += 1) i];
-      }
-
-      return dayToDisplay.contains(DateTime.parse(model.date).day);
+      return displayDays.contains(DateTime.parse(model.date));
     }).toList();
 
     for (String day in weekDays) {
@@ -523,8 +474,7 @@ class _HomeTabState extends State<HomeTab> {
                                     : 2,
                                 (index) => ExpenseCard(
                                   isPayed: mainConntroller
-                                          .payedExpenses[index]
-                                          .expenseStatus ==
+                                          .payedExpenses[index].expenseStatus ==
                                       ExpenseState.payed,
                                   expenseModel:
                                       mainConntroller.payedExpenses[index],
@@ -541,7 +491,7 @@ class _HomeTabState extends State<HomeTab> {
             if (lsController.currentUser.value.priority == UserPriority.Admin)
               Container(
                 width: double.infinity,
-                height: 380,
+                height: 480,
                 padding: const EdgeInsets.only(
                     top: 15, left: 15, right: 15, bottom: 20),
                 decoration: BoxDecoration(
@@ -568,7 +518,7 @@ class _HomeTabState extends State<HomeTab> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: SizedBox(
-                        height: 300,
+                        height: 400,
                         width: MediaQuery.of(context).size.width,
                         child: PieChart(
                           dataMap: ringChatData,
@@ -780,4 +730,7 @@ class _HomeTabState extends State<HomeTab> {
       ),
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

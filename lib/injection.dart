@@ -23,6 +23,7 @@ import 'package:bussiness_management/domain/usecase/get_products_usecase.dart';
 import 'package:bussiness_management/domain/usecase/get_user_usecase.dart';
 import 'package:bussiness_management/domain/usecase/get_users_usecase.dart';
 import 'package:bussiness_management/domain/usecase/search_customers_usecase.dart';
+import 'package:bussiness_management/domain/usecase/search_expense_usecase.dart';
 import 'package:bussiness_management/domain/usecase/search_products_usecase.dart';
 import 'package:bussiness_management/domain/usecase/set_user_usecase.dart';
 import 'package:bussiness_management/domain/usecase/sign_in_with_email_password.dart';
@@ -55,6 +56,7 @@ void setup() {
   di.registerFactory(() => LSController(di(), di(), di(), di(), di()));
   di.registerFactory(
     () => MainConntroller(
+      di(),
       di(),
       di(),
       di(),
@@ -135,6 +137,7 @@ void setup() {
   di.registerLazySingleton(() => GetExpenseChartUsecase(di()));
   di.registerLazySingleton(() => GetOrderChartUsecase(di()));
   di.registerLazySingleton(() => GetSingleOrderUsecase(di()));
+  di.registerLazySingleton(() => SearchExpenseUsecase(di()));
 
   // externals
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -148,7 +151,6 @@ void setup() {
 
   GoogleSignIn googleSignIn = GoogleSignIn();
 
-  
   di.registerLazySingleton(() => firebaseStorage);
   di.registerLazySingleton(() => firebaseAuth);
   di.registerLazySingleton(() => firebaseFirestore);

@@ -1,6 +1,4 @@
 import 'package:bussiness_management/constants.dart';
-import 'package:bussiness_management/data/model/product_category_model.dart';
-import 'package:bussiness_management/data/model/product_model.dart';
 import 'package:bussiness_management/view/Pages/search_page.dart';
 import 'package:bussiness_management/view/controller/main_controller.dart';
 import 'package:bussiness_management/view/widget/category_card.dart';
@@ -15,7 +13,8 @@ class ProductTab extends StatefulWidget {
   State<ProductTab> createState() => _ProductTabState();
 }
 
-class _ProductTabState extends State<ProductTab> {
+class _ProductTabState extends State<ProductTab>
+    with AutomaticKeepAliveClientMixin<ProductTab> {
   MainConntroller mainConntroller = Get.find<MainConntroller>();
 
   // List<ProductCategoryModel> categories = [];
@@ -96,9 +95,13 @@ class _ProductTabState extends State<ProductTab> {
                   mainAxisSpacing: 13,
                   childAspectRatio: 1 / 1.05),
               itemBuilder: (context, index) {
-                return CategoryCard(productCategoryModel: ProductCategory.listWIcons[index]);
+                return CategoryCard(
+                    productCategoryModel: ProductCategory.listWIcons[index]);
               },
             ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

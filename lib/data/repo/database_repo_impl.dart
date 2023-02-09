@@ -282,5 +282,15 @@ class DatabaseRepoImpl extends DatabaseRepo {
       return left(e);
     }
   }
+  
+  @override
+  Future<Either<Exception, List<ExpenseModel>>> searchExpense(String sellerName) async {
+    try {
+      final res = await databaseDataSrc.searchExpense(sellerName);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
  
 }

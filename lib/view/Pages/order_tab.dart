@@ -15,7 +15,7 @@ class OrderTab extends StatefulWidget {
   State<OrderTab> createState() => _OrderTabState();
 }
 
-class _OrderTabState extends State<OrderTab> {
+class _OrderTabState extends State<OrderTab> with AutomaticKeepAliveClientMixin<OrderTab> {
   MainConntroller mainConntroller = Get.find<MainConntroller>();
 
   int selectedTabIndex = 0;
@@ -245,4 +245,7 @@ class _OrderTabState extends State<OrderTab> {
           ],
         ));
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 }

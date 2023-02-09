@@ -63,6 +63,10 @@ class CustomerSource {
   static String customer = 'customer';
   static String custromerReferal = 'customer referal';
   static String showroom = 'showroom';
+  static String website = "website";
+  static String qefira = "Qefira";
+  static String jiji = "Jiji";
+  static String ecommerceWeb = "E-commerce web";
 
   static List<String> list = [
     faceBook,
@@ -72,7 +76,11 @@ class CustomerSource {
     family,
     customer,
     custromerReferal,
-    showroom
+    showroom,
+    website,
+    qefira,
+    jiji,
+    ecommerceWeb,
   ];
 }
 
@@ -82,9 +90,10 @@ class PaymentMethod {
   static String Telebirr = 'Telebiir';
   static String Amole = 'Amole';
   static String Awash = 'Awash';
+  static String Abyssinia = "Abyssinia";
   static String others = 'others';
 
-  static List<String> list = [CBE, Cash, Telebirr, Amole, Awash, others];
+  static List<String> list = [CBE, Cash, Telebirr, Amole, Awash, Abyssinia, others];
 }
 
 class DeliveryOption {
@@ -120,6 +129,7 @@ class KK {
   static String NifasSilk = "Nifas Silk";
   static String Arada = "Arada";
   static String LemiKura = "Lemi Kura";
+  static String Oromia = "Oromia";
 
   static List<String> list = [
     Bole,
@@ -133,6 +143,7 @@ class KK {
     NifasSilk,
     Arada,
     LemiKura,
+    Oromia,
   ];
 }
 
