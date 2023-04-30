@@ -51,10 +51,7 @@ class _CustomersPageState extends State<CustomersPage> {
           ),
           IconButton(
             onPressed: () {
-              mainConntroller.getCustomers(
-                quantity: 10,
-                end: 3,
-              );
+              mainConntroller.getCustomers();
             },
             icon: const Icon(
               Icons.refresh_rounded,

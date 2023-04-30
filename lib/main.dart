@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
+// business logic : 3,103 lines
+// ui : 11,231 lines
+// total : 14,334 lines
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
